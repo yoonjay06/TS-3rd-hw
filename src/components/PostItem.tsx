@@ -5,16 +5,16 @@ import type { Post } from "../types";
 
 interface PostItemProps {
   post: Post; // 아까 만든 Post 타입을 그대로!
-  // 과제 2-2: onSelect: (post: Post) => void를 추가하세요.
+  onSelect: (post: Post) => void; // 과제 2-2: 선택된 게시글을 부모(App)에게 알려 주는 함수
 }
-function PostItem({ post }: PostItemProps) {
+function PostItem({ post, onSelect }: PostItemProps) {
   return (
     <Card>
       <Title>{post.title}</Title>
       <Content>{post.content}</Content>
       <Author>by {post.author}</Author>
-      {/* 과제 2-2: 버튼을 누르면 현재 post를 onSelect로 넘기세요. */}
-      <Button label="선택" />
+      {/* 과제 2-2: 버튼을 누르면 이 카드의 post를 onSelect로 넘긴다 */}
+      <Button label="선택" onClick={() => onSelect(post)} />
     </Card>
   );
 }

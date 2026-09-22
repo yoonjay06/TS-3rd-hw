@@ -14,7 +14,8 @@ function App() {
   // 과제 1-1: 게시글 목록 상태 — 타입 인자 Post[]를 직접 적어서 Post가 아닌 값은 들어올 수 없게 한다
   const [posts, setPosts] = useState<Post[]>(DUMMY);
 
-  // 과제 2-1: 선택한 게시글 상태를 Post | null 타입, 초기값 null로 만드세요.
+  // 과제 2-1: 선택한 게시글 — "아직 선택 안 함(null)" 또는 "게시글 하나(Post)"
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -56,6 +57,10 @@ function App() {
     setAuthor("");
   };
 
+  const handleSelectPost = (post: Post) => {
+    setSelectedPost(post);
+  };
+
   // 과제 3-3: posts.length에 따라 성공 또는 빈 상태 객체를 만드세요. 변수 타입은 PostListState로 적습니다.
 
   return (
@@ -79,15 +84,31 @@ function App() {
       />
       <Button label="추가" onClick={handleAddPost} />
 
-      {/* 과제 2-2: PostItem에 onSelect를 넘기세요. */}
       {/* 과제 3-3: 아래 목록을 PostList로 바꾸고 목록 상태와 onSelect를 넘기세요. 쓰지 않게 된 import와 List는 지웁니다. */}
       <List>
         {posts.map((post) => (
-          <PostItem key={post.id} post={post} />
+          <PostItem key={post.id} post={post} onSelect={handleSelectPost} />
         ))}
       </List>
 
-      {/* 과제 2-3: 선택 전에는 "게시글을 선택해주세요.", 선택 후에는 번호·제목·내용·작성자를 보여 주세요. */}
+      {/* 과제 2-3: null인지 먼저 확인해서 타입을 좁힌 뒤에만 게시글 속성에 접근한다 */}
+      <Detail>
+        <DetailTitle>선택한 게시글</DetailTitle>
+        {selectedPost === null ? (
+          <Guide>게시글을 선택해주세요.</Guide>
+        ) : (
+          <InfoList>
+            <dt>번호</dt>
+            <dd>{selectedPost.id}</dd>
+            <dt>제목</dt>
+            <dd>{selectedPost.title}</dd>
+            <dt>내용</dt>
+            <dd>{selectedPost.content}</dd>
+            <dt>작성자</dt>
+            <dd>{selectedPost.author}</dd>
+          </InfoList>
+        )}
+      </Detail>
     </>
   );
 }
@@ -99,6 +120,46 @@ const Title = styled.h1`
 
 const List = styled.div`
   margin: 0;
+`;
+
+const Detail = styled.section`
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid #d6e2fb;
+  border-radius: 12px;
+  background-color: #eef3ff;
+`;
+
+const DetailTitle = styled.h2`
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #2f6feb;
+`;
+
+const Guide = styled.p`
+  margin: 0;
+  font-size: 14px;
+  color: #666666;
+`;
+
+const InfoList = styled.dl`
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 16px;
+  margin: 0;
+  font-size: 14px;
+
+  dt {
+    font-weight: 600;
+    color: #333333;
+  }
+
+  dd {
+    margin: 0;
+    color: #666666;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
 `;
 
 export default App;
