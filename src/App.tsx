@@ -1,8 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
-import PostItem from "./components/PostItem";
+import PostList from "./components/PostList";
 import Button from "./components/Button";
-import type { NewPost, Post } from "./types";
+import type { NewPost, Post, PostListState } from "./types";
 
 const DUMMY: Post[] = [
   { id: 1, title: "첫 글", content: "반갑습니다", author: "동건" },
@@ -61,7 +61,9 @@ function App() {
     setSelectedPost(post);
   };
 
-  // 과제 3-3: posts.length에 따라 성공 또는 빈 상태 객체를 만드세요. 변수 타입은 PostListState로 적습니다.
+  // 과제 3-3: 게시글 개수에 따라 성공 또는 빈 상태 객체를 만든다
+  const postListState: PostListState =
+    posts.length > 0 ? { status: "success", data: posts } : { status: "empty" };
 
   return (
     <>
@@ -84,12 +86,8 @@ function App() {
       />
       <Button label="추가" onClick={handleAddPost} />
 
-      {/* 과제 3-3: 아래 목록을 PostList로 바꾸고 목록 상태와 onSelect를 넘기세요. 쓰지 않게 된 import와 List는 지웁니다. */}
-      <List>
-        {posts.map((post) => (
-          <PostItem key={post.id} post={post} onSelect={handleSelectPost} />
-        ))}
-      </List>
+      {/* 과제 3-3: 현재 목록 상태에 맞는 화면은 PostList가 결정한다 */}
+      <PostList state={postListState} onSelect={handleSelectPost} />
 
       {/* 과제 2-3: null인지 먼저 확인해서 타입을 좁힌 뒤에만 게시글 속성에 접근한다 */}
       <Detail>
@@ -116,10 +114,6 @@ function App() {
 const Title = styled.h1`
   color: #2f6feb;
   font-size: 28px;
-`;
-
-const List = styled.div`
-  margin: 0;
 `;
 
 const Detail = styled.section`
